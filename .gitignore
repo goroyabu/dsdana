@@ -1,3 +1,5 @@
+### https://raw.github.com/github/gitignore/c1b7904af6689bd01646f008b0561d4f19a0e972/C++.gitignore
+
 # Prerequisites
 *.d
 
@@ -30,3 +32,24 @@
 *.exe
 *.out
 *.app
+
+# Directory
+/html/
+/build/
+/include/
+/lib/
+/bin/
+/documentation/html/
+
+# Cashe
+.DS_Store
+*~
+*.cpp~
+*.hpp~
+
+# Example
+work/example_hittree.root
+work/example_detailed_hittree.root
+
+.gitignore
+.gitignore~
