@@ -17,7 +17,7 @@ INCLUDE_DIR := $(TOP_DIR)/include
 CXX = g++
 ROOTCFLAGS = -I`root-config --prefix`/include/root
 ROOTGLIBS  = -L`root-config --prefix`/lib/root -lCore -lImt -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lROOTVecOps -lTree -lTreePlayer -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -lROOTDataFrame -lpthread -lm -ldl
-CXXFLAGS = $(ROOTCFLAGS) -MMD -MP -std=c++17 -Wall -Wextra
+CXXFLAGS = $(ROOTCFLAGS) -MMD -MP -std=c++1z -Wall -Wextra
 CXXLIBS = $(ROOTGLIBS) -lCOMCLI -lANLCross
 #--------------------------------------------------
 
