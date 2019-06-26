@@ -121,7 +121,7 @@ show-files : ## Print all of the sources, objects and headers.
 
 .PHONY : install_tools
 install_tools : ## Compile and install the tools.
-	@cd tools; make install;
+	@cd tools; make install CXX=$(CXX);
 
 .PHONY : uninstall_tools
 uninstall_tools : ## Uninstall the tools.
