@@ -1,6 +1,6 @@
 #!/bin/sh
 
-app="../bin/dsdana"
+app="dsdana"
 
 function ana ()
 {

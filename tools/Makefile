@@ -1,6 +1,6 @@
 #---TARGET---
 
-APP = dsdana
+APP = mkreadtree mkwritetree
 LIB = 
 #--------------------------------------------------
 
@@ -15,10 +15,8 @@ INCLUDE_DIR := $(TOP_DIR)/include
 #--------------------------------------------------
 
 CXX = g++
-ROOTCFLAGS = -I`root-config --prefix`/include/root
-ROOTGLIBS  = -L`root-config --prefix`/lib/root -lCore -lImt -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lROOTVecOps -lTree -lTreePlayer -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -lROOTDataFrame -lpthread -lm -ldl
-CXXFLAGS = $(ROOTCFLAGS) -MMD -MP -std=c++17 -Wall -Wextra
-CXXLIBS = $(ROOTGLIBS) -lCOMCLI -lANLCross
+CXXFLAGS = -MMD -MP -std=c++17 -Wall -Wextra
+CXXLIBS = -lCOMCLI
 #--------------------------------------------------
 
 app = $(addprefix $(BUILD_DIR)/,$(APP))
@@ -49,22 +47,23 @@ help : ## Print this message.
 show-structure : ## Print the directory structure of this makefile.
 	@echo "Directories:"
 	@printf "./  %-25s%s\n" "" "This makefile is here."
-	@printf "|-- %-25s%s\n" "source/" "All of C++ files in here will be compiled into object files."
-	@printf "|   %-25s%s\n" "|-- src.hpp" ""
-	@printf "|   %-25s%s\n" "|-- src.cpp" ""
+	@printf "|-- %-25s%s\n" "source/" "All of C++ files in here will be compiled into executables. Main fucntions are needed."
+	@printf "|   %-25s%s\n" "|-- app_example.hpp" ""
+	@printf "|   %-25s%s\n" "|-- app_example.cpp" ""
 	@printf "|   %-25s%s\n" "'-- subsrc/" "Files in the sub-directories of 'source' "
-	@printf "|   %-25s%s\n" "    |-- sub_src.h" ""
-	@printf "|   %-25s%s\n" "    '-- sub_src.cpp" ""
+	@printf "|   %-25s%s\n" "    |-- sub_sample.h" ""
+	@printf "|   %-25s%s\n" "    '-- sub_sample.cpp" ""
 	@printf "|-- %-25s%s\n" "build/" ""
-	@printf "|   %-25s%s\n" "|-- src.o" ""
+	@printf "|   %-25s%s\n" "|-- app_example" ""
 	@printf "|   %-25s%s\n" "'-- subsrc/" ""
-	@printf "|   %-25s%s\n" "    '-- sub_src.o" ""
+	@printf "|   %-25s%s\n" "    '-- sub_sample" ""
 	@printf "|-- %-25s%s\n" "include/" "The symbolic links of headers are created here."
-	@printf "|   %-25s%s\n" "|-- src.hpp@ -> path/to/here/source/src.hpp" ""
-	@printf "|   %-25s%s\n" "'-- sub_src.h@ -> path/to/here/source/subsrc/sub_src.h" ""
-	@printf "|-- %-25s%s\n" "bin/" "The app is installed here."
-	@printf "|   %-25s%s\n" "'-- app4example" ""
-	@printf "'-- %-25s%s\n" "lib/" "The library is installed here."
+	@printf "|   %-25s%s\n" "|-- app_example.hpp@ -> path/to/here/source/src.hpp" ""
+	@printf "|   %-25s%s\n" "'-- sub_sample.h@ -> path/to/here/source/subsrc/sub_src.h" ""
+	@printf "|-- %-25s%s\n" "bin/" "Executables are installed here."
+	@printf "|   %-25s%s\n" "'-- app_example" ""
+	@printf "|   %-25s%s\n" "'-- sub_sample" ""
+	@printf "'-- %-25s%s\n" "lib/" "Libraries is installed here."
 	@printf "    %-25s%s\n" "'-- libSAMPLE.so" ""
 
 all : $(BUILD_DIR) $(target) ## Find and compile all of the C++ files in the 'source' directory.
@@ -86,8 +85,13 @@ $(BUILD_DIR) :
 	mkdir -p $@
 #--------------------------------------------------
 
-$(app) : $(main_obj) $(objects) $(dictionary_obj)
-	$(CXX) $(CXXLIBS) $(CXXFLAGS) -o $@ $^
+$(BUILD_DIR)/%: $(SOURCE_DIR)/%.cpp
+	@echo $@
+	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
+	$(CXX) $(CXXLIBS) $(CXXFLAGS) $(include_flag) -o $@ $<
+
+#$(app) : $(main_obj) $(objects) $(dictionary_obj)
+#	$(CXX) $(CXXLIBS) $(CXXFLAGS) -o $@ $^
 
 ${lib} : ${objects} ${dictionary_obj}
 	mkdir -p $(INCLUDE_DIR); cd $(INCLUDE_DIR); ln -sf $(addprefix ,$(headers)) .
@@ -96,7 +100,7 @@ ${lib} : ${objects} ${dictionary_obj}
 $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 	@echo $@
 	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
-	$(CXX) $(CXXFLAGS) $(include_flag) -o $@ -c $<
+	$(CXX) $(CXXFLAGS) $(include_flag) -fPIC -o $@ -c $<
 
 .PHONY : clean
 clean : ## Delete the targets and the objects in the 'build' directory.
@@ -106,7 +110,7 @@ clean : ## Delete the targets and the objects in the 'build' directory.
 cleanup : ## Delete the directories made at the compilation, 'build', 'bin', 'lib' and 'include'.
 	rm -rf $(BUILD_DIR) $(BIN_DIR) $(LIB_DIR) $(INCLUDE_DIR)
 
-.PHONY : uninstall
+.PHONY : uninstall 
 uninstall : ## Uninstall the app or the lib from the install directories.
 	rm $(installed_app) $(installed_lib)
 
@@ -118,15 +122,6 @@ show-files : ## Print all of the sources, objects and headers.
 	@$(foreach temp, $(objects), echo "  "$(temp);)
 	@echo "Headers:"
 	@$(foreach temp, $(headers), echo "  "$(temp);)
-
-.PHONY : install_tools
-install_tools : ## Compile and install the tools.
-	@cd tools; make install;
-
-.PHONY : uninstall_tools
-uninstall_tools : ## Uninstall the tools.
-	@cd tools; make uninstall;
-
 #--------------------------------------------------
 
 -include $(dependency)
