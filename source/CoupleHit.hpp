@@ -3,7 +3,8 @@
    @author Goro Yabu
    @date 2018/11/27
    @date 2019/06/20 v2.0
-   @version 2.0
+   @date 2019/07/23 v3.0
+   @version 3.0
 **/
 #ifndef CoupleHit_hpp
 #define CoupleHit_hpp
@@ -18,14 +19,14 @@
 #include <ANLModuleBase.hpp>
 #include <ANLCross.hpp>
 
-#include "ReadDatabase.hpp"
+#include "ReadDatabaseText.hpp"
 
 class CoupleHit : public anlcross::ANLModuleBase
 {
 private:
     std::vector<int> m_sorted_index_x;
     std::vector<int> m_sorted_index_y;
-    ReadDatabase * mDatabase;
+    ReadDatabaseText * mDatabase;
     std::vector<int> m_detid_list;
     TH1D * m_spect;
     TH2D * m_image;

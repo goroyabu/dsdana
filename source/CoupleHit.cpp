@@ -3,12 +3,14 @@
    @author Goro Yabu
    @date 2018/12/03
    @date 2019/06/20 v2.0 Implement the multi-hit analysis
-   @version 2.0
+   @date 2019/07/23 v3.0 Change 'ReadDatabase' -> 'ReadDatabaseText'
+   @version 3.0
 **/
 #include "CoupleHit.hpp"
 #include <algorithm>
+#include <TFile.h>
 using namespace anlcross;
-CoupleHit::CoupleHit() : ANLModuleBase("CoupleHit", "2.0"), mDatabase(nullptr),
+CoupleHit::CoupleHit() : ANLModuleBase("CoupleHit", "3.0"), mDatabase(nullptr),
 			 m_spect(nullptr), m_image(nullptr)
 {
     m_delta_e_threshold = 5.0;
@@ -19,8 +21,8 @@ void CoupleHit::mod_init(int &status)
     status = ANL_OK;
     //std::cout << "CoupleHit::mod_init" << std::endl;
     
-    mDatabase = (ReadDatabase*)get_module("ReadDatabase");
-    if( !mDatabase || mDatabase->mod_name()!="ReadDatabase") status = ANL_NG;
+    mDatabase = (ReadDatabaseText*)get_module("ReadDatabaseText");
+    if( !mDatabase || mDatabase->mod_name()!="ReadDatabaseText") status = ANL_NG;
     mDatabase->GetDetIDList(&m_detid_list);
     
     status = this->bnkDefAll();
