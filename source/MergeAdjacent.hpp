@@ -2,7 +2,8 @@
    @file MergeAdjacent.hpp
    @author Goro Yabu
    @date 2018/11/27
-   @version 1.0
+   @date 2019/07/23
+   @version 2.0
 **/
 #ifndef MergeAdjacent_hpp
 #define MergeAdjacent_hpp
@@ -18,12 +19,13 @@
 #include <ANLCross.hpp>
 #include <ANLModuleBase.hpp>
 
-#include "ReadDatabase.hpp"
+//#include "ReadDatabase.hpp"
+#include "ReadDatabaseText.hpp"
 
 class MergeAdjacent : public anlcross::ANLModuleBase
 {
 private:
-    ReadDatabase * mDatabase;
+    ReadDatabaseText * mDatabase;
     std::vector<int> m_detid_list;
     TH1D * m_histogram;
     std::vector<int> m_lv1index_list;

@@ -2,11 +2,12 @@
    @file MergeAdjacent.hpp
    @author Goro Yabu
    @date 2018/12/04
-   @version 1.0
+   @date 2019/07/23 v2.0 Change 'ReadDatabase' -> 'ReadDatabaseText'
+   @version 2.0
 **/
 #include "MergeAdjacent.hpp"
 using namespace anlcross;
-MergeAdjacent::MergeAdjacent() : ANLModuleBase("MergeAdjacent", "1.0"), mDatabase(nullptr), m_histogram(nullptr)
+MergeAdjacent::MergeAdjacent() : ANLModuleBase("MergeAdjacent", "2.0"), mDatabase(nullptr), m_histogram(nullptr)
 {
     m_ndetector = 1;
     m_save_his = true;
@@ -18,8 +19,8 @@ void MergeAdjacent::mod_init(int &status)
     //std::cout << "MergeAdjacent::mod_init" << std::endl;
     m_histogram = new TH1D("hist_dist_epi","hist_dist_epi;pos;epi",100,-0.5,99.5);
     
-    mDatabase = (ReadDatabase*)get_module("ReadDatabase");
-    if( !mDatabase || mDatabase->mod_name()!="ReadDatabase") status = ANL_NG;
+    mDatabase = (ReadDatabaseText*)get_module("ReadDatabaseText");
+    if( !mDatabase || mDatabase->mod_name()!="ReadDatabaseText") status = ANL_NG;
     mDatabase->GetDetIDList(&m_detid_list);
     
     status = this->bnkDefAll();
