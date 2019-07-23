@@ -4,6 +4,7 @@
    @date 2018/11/27
    @date 2019/04/16 v1.1
    @date 2019/06/20 v1.2
+   @date 2019/07/23 v2.0 Change 'ReadDatabase' -> 'ReadDatabaseText'
    @version 1.2
 **/
 #ifndef ApplyDatabase_hpp
@@ -17,12 +18,13 @@
 #include <bnk.hpp>
 #include "ANLModuleBase.hpp"
 #include "ANLCross.hpp"
-#include "ReadDatabase.hpp"
+//#include "ReadDatabase.hpp"
+#include "ReadDatabaseText.hpp"
 
 class ApplyDatabase : public anlcross::ANLModuleBase
 {
 private:
-    ReadDatabase * mDatabase;
+    ReadDatabaseText * mDatabase;
     TRandom3 * mRandom;
     TH2D * m_histall;
     TH2D * m_spectall;

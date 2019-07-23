@@ -4,11 +4,12 @@
    @date 2018/11/27
    @date 2019/04/16 v1.1 Change this module name to ApplyDatabase
    @date 2019/06/20 v1.2 Fix bugs.
-   @version 1.2
+   @date 2019/07/23 v2.0 Change 'ReadDatabase' -> 'ReadDatabaseText'
+   @version 2.0
 **/
 #include "ApplyDatabase.hpp"
 using namespace anlcross;
-ApplyDatabase::ApplyDatabase() : ANLModuleBase("ApplyDatabase", "1.2"),
+ApplyDatabase::ApplyDatabase() : ANLModuleBase("ApplyDatabase", "2.0"),
 				 mDatabase(nullptr), mRandom(nullptr),
 				 m_histall(nullptr), m_spectall(nullptr),
 				 m_multi_hist(nullptr)
@@ -21,8 +22,8 @@ void ApplyDatabase::mod_init(int &status)
     mRandom = new TRandom3();
     mRandom->SetSeed(time(NULL));
 
-    mDatabase = (ReadDatabase*)get_module("ReadDatabase");
-    if( !mDatabase || mDatabase->mod_name()!="ReadDatabase") status = ANL_NG;
+    mDatabase = (ReadDatabaseText*)get_module("ReadDatabaseText");
+    if( !mDatabase || mDatabase->mod_name()!="ReadDatabaseText") status = ANL_NG;
     
     this->bnkDefAll();
 
