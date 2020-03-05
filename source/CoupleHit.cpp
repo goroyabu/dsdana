@@ -60,8 +60,9 @@ void CoupleHit::mod_ana(int &status)
 void CoupleHit::mod_endrun(int &status)
 {
     if( gDirectory->InheritsFrom("TFile") && gDirectory->GetFile()->IsOpen() ){
-	m_spect->Write();
-	m_image->Write();
+	status = ANL_OK;
+	//m_spect->Write();
+	//m_image->Write();
     }
     status = ANL_OK;
 }
@@ -98,20 +99,20 @@ int CoupleHit::bnkDefAll()
     }
     
     bnk_def<int>  ("nhit_lv3",             1);
-    bnk_def<int>  ("detid_lv3",          128);
-    bnk_def<float>("epi_lv3",            128);
-    bnk_def<float>("epi_x_lv3",          128);
-    bnk_def<float>("epi_y_lv3",          128);
-    bnk_def<float>("pos_x_lv3",          128);
-    bnk_def<float>("pos_y_lv3",          128);
-    bnk_def<float>("pos_z_lv3",          128);
-    bnk_def<float>("width_x_lv3",        128);
-    bnk_def<float>("width_y_lv3",        128);
-    bnk_def<float>("width_z_lv3",        128);
+    bnk_def<int>  ("detid_lv3",          mDatabase->GetNallch());
+    bnk_def<float>("epi_lv3",            mDatabase->GetNallch());
+    bnk_def<float>("epi_x_lv3",          mDatabase->GetNallch());
+    bnk_def<float>("epi_y_lv3",          mDatabase->GetNallch());
+    bnk_def<float>("pos_x_lv3",          mDatabase->GetNallch());
+    bnk_def<float>("pos_y_lv3",          mDatabase->GetNallch());
+    bnk_def<float>("pos_z_lv3",          mDatabase->GetNallch());
+    bnk_def<float>("width_x_lv3",        mDatabase->GetNallch());
+    bnk_def<float>("width_y_lv3",        mDatabase->GetNallch());
+    bnk_def<float>("width_z_lv3",        mDatabase->GetNallch());
     bnk_def<int>  ("n_lv2signal_x_lv3",    1);
     bnk_def<int>  ("n_lv2signal_y_lv3",    1);
-    bnk_def<int>  ("lv2signal_id_x_lv3", 128);
-    bnk_def<int>  ("lv2signal_id_y_lv3", 128);
+    bnk_def<int>  ("lv2signal_id_x_lv3", mDatabase->GetNallch());
+    bnk_def<int>  ("lv2signal_id_y_lv3", mDatabase->GetNallch());
     
     return ANL_OK;
 }

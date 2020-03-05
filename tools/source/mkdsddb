@@ -1,0 +1,83 @@
+#!/usr/local/bin/python3
+
+def detid_stripid(asicid, asicch):
+    if asicid==0:
+        detid = 0
+        stripid = asicch
+    elif asicch%2!=0:
+        detid = -1
+        stripid = -1
+    elif 1 <= asicid <= 4:
+        detid = 1
+        stripid = 64 + (asicid-1)*32 + round(asicch/2)
+    elif 5 <= asicid <= 8:
+        detid = 1
+        stripid = 64 + (asicid-1)*32 + round(asicch/2)
+    return detid, stripid
+
+def material(detid, stripid):
+    if detid==0: return 0
+    return 1
+
+def badch(detid, stripid):
+    return 0
+
+def posx(detid, stripid):
+    if detid==0: return round(0.200*stripid - (0.200*64)*0.5 - 0.200*0.5, 4)
+    if 64 <= stripid <= 191:
+        return round(-1*( 0.250*stripid - 16.0 + 0.250*0.5), 4)
+    return round(0.000, 4)
+
+def posy(detid, stripid):
+    if detid==0: return 0
+    if 192 <= stripid <= 319:
+        return round(-1*( 0.250*(stripid-192) - 16.0 + 0.250*0.5), 4)
+    return round(0.000, 4)
+
+def posz(detid, stripid):
+    if detid==0: return 5.0
+    return 0.0
+
+def deltax(detid, stripid):
+    if detid==0: return 0.200
+    if 64 <= stripid <= 191: return 0.250
+    return -1
+
+def deltay(detid, stripid):
+    if detid==0: return -1
+    if 192 <= stripid <= 319: return 0.250
+    return -1
+
+def deltaz(detid, stripid):
+    if detid==0: return 0.500
+    return 2.000
+
+def ethre(detid, stripid):
+    if detid==0: return 2.500
+    return 5.000
+
+def print_format():
+    return "#asicid/I:asicch/I:detid/I:stripid/I:material/I:posx/F:posy/F:posz/F:widthx/F:widthy/F:widthz/F:badch/I:ethre/F:"
+
+def strip_info(asicid, asicch, detid, stripid):
+    _material = material(detid, stripid)
+    _posx = posx(detid, stripid)
+    _posy = posy(detid, stripid)
+    _posz = posz(detid, stripid)
+    _deltax = deltax(detid, stripid)
+    _deltay = deltay(detid, stripid)
+    _deltaz = deltaz(detid, stripid)
+    _ethre = ethre(detid, stripid)
+
+    print(asicid, asicch, detid, stripid, _material, _posx, _posy, _posz, _deltax, _deltay, _deltaz, _ethre)
+
+def main():
+    print(print_format())
+
+    for asicid in range(9):
+        for asicch in range(64):
+            detid, stripid = detid_stripid(asicid, asicch)
+            strip_info(asicid, asicch, detid, stripid)
+
+if __name__ == '__main__':
+    main()

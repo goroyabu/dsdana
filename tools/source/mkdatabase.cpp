@@ -1,5 +1,5 @@
 /**
-   @file main.cpp
+   @file mkdatabase.cpp
    @author Goro Yabu
    @date 2018/12/20
    @version 1.0

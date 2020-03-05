@@ -1,6 +1,6 @@
 #---TARGET---
 
-APP = mkreadtree mkwritetree
+APP = mkreadtree mkwritetree mkdsddb mkanlmodule
 LIB = 
 #--------------------------------------------------
 
@@ -84,6 +84,11 @@ endif
 $(BUILD_DIR) :
 	mkdir -p $@
 #--------------------------------------------------
+
+$(BUILD_DIR)/%: $(SOURCE_DIR)/%
+	@echo $@
+	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
+	cp $< $@
 
 $(BUILD_DIR)/%: $(SOURCE_DIR)/%.cpp
 	@echo $@

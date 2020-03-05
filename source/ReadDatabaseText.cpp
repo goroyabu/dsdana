@@ -26,65 +26,7 @@ ReadDatabaseText::~ReadDatabaseText()
 }
 void ReadDatabaseText::mod_init(int &status)
 {
-    using namespace std;
-
     status = anlcross::ANL_OK;
-
-    /*
-    mInFile = new TFile( m_infile_name.c_str(), "read");
-    if( !mInFile || mInFile->IsZombie() ) status = ANL_NG;
-    else{    
-	mDatabase = (TTree*)mInFile->Get( m_intree_name.c_str() );
-	
-	if( 0 > mDatabase->SetBranchAddress("asicid", &m_asicid) ) status = anlcross::ANL_NG;
-	if( 0 > mDatabase->SetBranchAddress("asicch", &m_asicch) ) status = anlcross::ANL_NG;
-	if( 0 > mDatabase->SetBranchAddress("detid", &m_detid) ) status = anlcross::ANL_NG;
-	if( 0 > mDatabase->SetBranchAddress("stripid", &m_stripid) ) status = anlcross::ANL_NG;
-	if( 0 > mDatabase->SetBranchAddress("posx", &m_posx) ) status = anlcross::ANL_NG;
-	if( 0 > mDatabase->SetBranchAddress("posy", &m_posy) ) status = anlcross::ANL_NG;
-	if( 0 > mDatabase->SetBranchAddress("posz", &m_posz) ) status = anlcross::ANL_NG;
-	if( 0 > mDatabase->SetBranchAddress("widthx", &m_widthx) ) status = anlcross::ANL_NG;
-	if( 0 > mDatabase->SetBranchAddress("widthy", &m_widthy) ) status = anlcross::ANL_NG;
-	if( 0 > mDatabase->SetBranchAddress("widthz", &m_widthz) ) status = anlcross::ANL_NG;
-	if( 0 > mDatabase->SetBranchAddress("badch", &m_badch) ) status = anlcross::ANL_NG;
-	if( 0 > mDatabase->SetBranchAddress("ethre", &m_ethre) ) status = anlcross::ANL_NG;
-	if( 0 > mDatabase->SetBranchAddress("calfunc", &m_calfunc) ) status = anlcross::ANL_NG;
-
-	if( status == anlcross::ANL_OK ){
-	    int n = mDatabase->GetEntries();
-	    for(int i=0; i<n; ++i){
-		mDatabase->GetEntry(i);
-		mStripMap[std::make_pair(m_asicid, m_asicch)] = std::make_pair(m_detid, m_stripid);
-		mEntryIndex[std::make_pair(m_detid, m_stripid)] = i;
-		cout << "ASICID : " << setw(3) << m_asicid << " , CH : " << setw(3) << m_asicch << " = ";
-		cout << "DETID : " << setw(3) << m_detid << " , STRIPID : " << setw(3) << m_stripid << endl;
-		cout << "CALFUNC : " << m_calfunc->GetName() << endl;
-		
-		if( !ExistDetID(m_detid) )
-                    mDetIDList.push_back(m_detid);
-                
-	        stripinfo* temp = new stripinfo();
-		temp->asicid = m_asicid;
-		temp->asicch = m_asicch;
-		temp->detid = m_detid;
-		temp->stripid = m_stripid;
-		temp->posx = m_posx;
-		temp->posy = m_posy;
-		temp->posz = m_posz;
-		temp->widthx = m_widthx;
-		temp->widthy = m_widthy;
-		temp->widthz = m_widthz;
-		temp->badch = m_badch;
-		temp->ethre = m_ethre;
-		temp->calfunc = (TSpline3*)m_calfunc->Clone();
-		mDatabaseList.push_back(temp);
-	    }
-	}
-	
-    }
-    std::cout << std::endl;
-    */
-
     status = this->read_database();
 }
 void ReadDatabaseText::mod_com(int &status)
@@ -97,15 +39,15 @@ void ReadDatabaseText::mod_com(int &status)
 }
 void ReadDatabaseText::mod_bgnrun(int &status)
 {
-    status = ANL_OK;
+    status = anlcross::ANL_OK;
 }
 void ReadDatabaseText::mod_ana(int &status)
 {
-    status = ANL_OK;
+    status = anlcross::ANL_OK;
 }
 void ReadDatabaseText::mod_endrun(int &status)
 {
-    status = ANL_OK;
+    status = anlcross::ANL_OK;
 }
 void ReadDatabaseText::mod_exit(int &status)
 {
@@ -117,7 +59,7 @@ void ReadDatabaseText::mod_exit(int &status)
     delete mInFile;
     delete m_calfunc;
     */
-    status = ANL_OK;
+    status = anlcross::ANL_OK;
 }
 
 int ReadDatabaseText::read_database()
@@ -158,6 +100,9 @@ int ReadDatabaseText::read_database()
 	std::cout << " , CH : " << std::setw(3) << asicch << " = ";
 	std::cout << "DETID : " << std::setw(3) << detid << " , STRIPID : ";
 	std::cout << std::setw(3) << stripid << std::endl;
+	
+	std::cout << "POS : " << posx << " " << posy << " " << posz << std::endl;
+	std::cout << "WID : " << widthx << " " << widthy << " " << widthz << std::endl;
 	std::cout << "PARAM : Size=" << calparam.size() << std::endl;
 	for(auto p : calparam) std::cout << " " << p;
 	std::cout << std::endl;	
@@ -179,8 +124,31 @@ int ReadDatabaseText::read_database()
 	temp->badch = badch;
 	temp->ethre = ethre;
 	//temp->calfunc = (TSpline3*)m_calfunc->Clone();
-	temp->calparam = calparam;
-	mDatabaseList.push_back(temp);
+	//temp->calparam = calparam;
+	//mDatabaseList.push_back(temp);
+	//temp->calparam.resize( calparam.size() );
+	for(auto p : calparam) temp->calparam.emplace_back(p);
+	//std::cout << calparam.size() << std::endl;
+	mDatabaseList.emplace_back(temp);
+	if( IsXside( temp->detid, temp->stripid ) )
+	    std::cout << "xside" << std::endl;
+	else std::cout << "yside" << std::endl;
+	//std::cout << mDatabaseList.size();
+	
+	if( asicid>maxinfo.asicid ) maxinfo.asicid = asicid;
+	if( detid>maxinfo.detid ) maxinfo.detid = detid;
+	if( stripid>maxinfo.stripid ) maxinfo.stripid = stripid;
+	if( posx>maxinfo.posx ) maxinfo.posx = posx;
+	if( posy>maxinfo.posy ) maxinfo.posy = posy;
+	if( posz>maxinfo.posz ) maxinfo.posz = posz;
+	if( asicid<mininfo.asicid ) mininfo.asicid = asicid;
+	if( detid<mininfo.detid ) mininfo.detid = detid;
+	if( stripid<mininfo.stripid ) mininfo.stripid = stripid;
+	if( posx<mininfo.posx ) mininfo.posx = posx;
+	if( posy<mininfo.posy ) mininfo.posy = posy;
+	if( posz<mininfo.posz ) mininfo.posz = posz;
+	
+	++index;
     }
     
     return anlcross::ANL_OK;

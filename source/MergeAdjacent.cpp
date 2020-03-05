@@ -86,20 +86,20 @@ int MergeAdjacent::bnkDefAll()
     using namespace bnk;
     bnk_def<int>("nsignal_x_lv2", 1);
     bnk_def<int>("nsignal_y_lv2", 1);
-    bnk_def<int>("detid_x_lv2", 128);
-    bnk_def<int>("detid_y_lv2", 128);
-    bnk_def<float>("epi_x_lv2", 128);
-    bnk_def<float>("epi_y_lv2", 128);
-    bnk_def<float>("pos_x_lv2", 128);
-    bnk_def<float>("pos_y_lv2", 128);
-    bnk_def<float>("width_x_lv2", 128);
-    bnk_def<float>("width_y_lv2", 128);
-    bnk_def<int>("n_merged_strips_x_lv2", 128);
-    bnk_def<int>("n_merged_strips_y_lv2", 128);
+    bnk_def<int>("detid_x_lv2", mDatabase->GetNallch());
+    bnk_def<int>("detid_y_lv2", mDatabase->GetNallch());
+    bnk_def<float>("epi_x_lv2", mDatabase->GetNallch());
+    bnk_def<float>("epi_y_lv2", mDatabase->GetNallch());
+    bnk_def<float>("pos_x_lv2", mDatabase->GetNallch());
+    bnk_def<float>("pos_y_lv2", mDatabase->GetNallch());
+    bnk_def<float>("width_x_lv2", mDatabase->GetNallch());
+    bnk_def<float>("width_y_lv2", mDatabase->GetNallch());
+    bnk_def<int>("n_merged_strips_x_lv2", mDatabase->GetNallch());
+    bnk_def<int>("n_merged_strips_y_lv2", mDatabase->GetNallch());
     bnk_def<int>("n_lv1signal_x_lv2", 1);
     bnk_def<int>("n_lv1signal_y_lv2", 1);
-    bnk_def<int>("lv1signal_id_x_lv2", 128);
-    bnk_def<int>("lv1signal_id_y_lv2", 128);
+    bnk_def<int>("lv1signal_id_x_lv2", mDatabase->GetNallch());
+    bnk_def<int>("lv1signal_id_y_lv2", mDatabase->GetNallch());
     
     return ANL_OK;
 }

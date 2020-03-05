@@ -34,6 +34,41 @@ private:
     {
     public:
 	stripinfo(){}// : calfunc(nullptr) {}
+	stripinfo() :
+	    asicid(0), asicch(0), detid(0), stripid(0),
+	    material(0), posx(0), posy(0), posz(0),
+	    widthx(0), widthy(0), widthz(0), badch(0), ethre(0)
+	{}// : calfunc(nullptr) {}
+	stripinfo(const stripinfo& org) :
+	    asicid(org.asicid), asicch(org.asicch),
+	    detid(org.detid), stripid(org.stripid),
+	    material(org.material),
+	    posx(org.posx), posy(org.posy), posz(org.posz),
+	    widthx(org.widthx), widthy(org.widthy), widthz(org.widthz),
+	    badch(org.badch), ethre(org.ethre)
+	{
+	    for(auto p : org.calparam) calparam.emplace_back(p);
+	}
+	stripinfo &operator=(const stripinfo &org)
+	{
+	    asicid = org.asicid;
+	    asicch = org.asicch;
+	    detid = org.detid;
+	    stripid = org.stripid;
+	    material = org.material;
+	    posx = org.posx;
+	    posy = org.posy;
+	    posz = org.posz;
+	    widthx = org.widthx;
+	    widthy = org.widthy;
+	    widthz = org.widthz;
+	    badch = org.badch;
+	    ethre = org.ethre;
+	    for(auto p : org.calparam) calparam.emplace_back(p);
+	    
+	    return *this;
+	}
+	
 	~stripinfo() {}
 	int asicid, asicch;
 	int detid, stripid;
@@ -55,6 +90,9 @@ private:
     entrymap mEntryIndex;
     std::vector<stripinfo*> mDatabaseList;
     std::vector<int> mDetIDList;
+    
+    stripinfo maxinfo;
+    stripinfo mininfo;
     
     int m_asicid, m_asicch;
     int m_detid, m_stripid;
@@ -106,8 +144,8 @@ public:
     {
 	float width;
 	GetWidthY(detid, stripid, &width);
-	if( width == -1 ) return true;
-	else return false;
+	if( width < 0 ) return true;
+	return false;
     }
     int GetDetIDList(std::vector<int>* detid_list);
     //int GetNasic() const { return m_asicid_list.size(); }
@@ -118,8 +156,21 @@ public:
 	return true;
     }
 
+    int GetAsicidMax() const { return maxinfo.asicid; }
+    int GetDetidMax() const { return maxinfo.detid; }
+    int GetStripidMax() const { return maxinfo.stripid; }
+    int GetPosxMax() const { return maxinfo.posx; }
+    int GetPosyMax() const { return maxinfo.posy; }
+    int GetPoszMax() const { return maxinfo.posz; }
+    int GetAsicidMin() const { return mininfo.asicid; }
+    int GetDetidMin() const { return mininfo.detid; }
+    int GetStripidMin() const { return mininfo.stripid; }
+    int GetPosxMin() const { return mininfo.posx; }
+    int GetPosyMin() const { return mininfo.posy; }
+    int GetPoszMin() const { return mininfo.posz; }
+    
 private:
-    inline double eval_pol(const std::vector<float>& param, const int pha)
+    inline double eval_pol(const std::vector<float>& param, const float pha)
     {
 	double value = 0.0; int nparam = (int)param.size();
 	for(int i=0; i<nparam; ++i) value += param[i]*std::pow(pha, i);

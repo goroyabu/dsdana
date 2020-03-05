@@ -44,8 +44,13 @@ void ApplyDatabase::mod_init(int &status)
 }
 void ApplyDatabase::mod_his(int &status)
 {
-    m_histall = new TH2D("histall_lv1", "histall;stripid;pha", 256, -0.5, 255.5, 1000, -10.5, 989.5);
-    m_spectall = new TH2D("spectall_lv1", "spectall;stripid;epi", 256, -0.5, 255.5, 1000, -10.25, 489.75);
+    m_histall = new TH2D("histall_lv1", "histall;stripid;pha",
+			 mDatabase->GetNallch(), GetStripidMin()-0.5, GetStripidMax()-0.5,
+			 1000, -10.5, 989.5);
+    m_spectall = new TH2D("spectall_lv1", "spectall;stripid;epi",
+			  mDatabase->GetNallch(), GetStripidMin()-0.5, GetStripidMax()-0.5,
+			  1000, -10.25, 489.75);
+    
     m_multi_hist = new TH2D("multipli_lv1", "multiplicity lv1;nsignal_x_lv1;nsignal_y_lv1;", 50, -0.5, 49.5, 50, -0.5, 49.5);
     status = ANL_OK;
 }
@@ -79,7 +84,7 @@ void ApplyDatabase::mod_ana(int &status)
 		m_histall->Fill(stripid, pha);
 		m_spectall->Fill(stripid, epi);
 		
-		if( this->isXside(asicid, asicch) == ANL_YES ){
+		if( mDatabase->IsXside(detid, stripid) ){
 		    m_detid_x_lv1.emplace_back(detid);
 		    m_stripid_x_lv1.emplace_back(stripid);
 		    m_epi_x_lv1.emplace_back(epi);
@@ -137,21 +142,21 @@ int ApplyDatabase::bnkDefAll()
     mvec_adc.resize(m_nasic);
     mvec_index.resize(m_nasic);
 
-    m_detid_x_lv1.reserve(128);
-    m_detid_y_lv1.reserve(128);
-    m_stripid_x_lv1.reserve(128);
-    m_stripid_y_lv1.reserve(128);
-    m_epi_x_lv1.reserve(128);
-    m_epi_y_lv1.reserve(128);
+    m_detid_x_lv1.reserve(mDatabase->GetNallch());
+    m_detid_y_lv1.reserve(mDatabase->GetNallch());
+    m_stripid_x_lv1.reserve(mDatabase->GetNallch());
+    m_stripid_y_lv1.reserve(mDatabase->GetNallch());
+    m_epi_x_lv1.reserve(mDatabase->GetNallch());
+    m_epi_y_lv1.reserve(mDatabase->GetNallch());
 
     bnk_def<int>("nsignal_x_lv1", 1);
     bnk_def<int>("nsignal_y_lv1", 1);
-    bnk_def<int>("detid_x_lv1", 128);
-    bnk_def<int>("detid_y_lv1", 128);
-    bnk_def<int>("stripid_x_lv1", 128);
-    bnk_def<int>("stripid_y_lv1", 128);
-    bnk_def<float>("epi_x_lv1", 128);
-    bnk_def<float>("epi_y_lv1", 128);
+    bnk_def<int>("detid_x_lv1", mDatabase->GetNallch());
+    bnk_def<int>("detid_y_lv1", mDatabase->GetNallch());
+    bnk_def<int>("stripid_x_lv1", mDatabase->GetNallch());
+    bnk_def<int>("stripid_y_lv1", mDatabase->GetNallch());
+    bnk_def<float>("epi_x_lv1", mDatabase->GetNallch());
+    bnk_def<float>("epi_y_lv1", mDatabase->GetNallch());
     
     return ANL_OK;
 }
@@ -160,7 +165,7 @@ int ApplyDatabase::bnkGetAll()
     using namespace bnk;
     using namespace std;
 
-    for(int i=0; i<8; ++i){
+    for(int i=0; i<m_nasic; ++i){
 	mvec_hitnum[i] = bnk_get<unsigned short>("hitnum"+to_string(i));
 	mvec_cmn[i] = bnk_get<unsigned short>("cmn"+to_string(i));
 	bnk_get<unsigned short>("adc"+to_string(i), &mvec_adc[i], 0, mvec_hitnum[i]);
@@ -189,7 +194,7 @@ int ApplyDatabase::clearVectorAll()
 {    
     mvec_hitnum.clear();
     mvec_cmn.clear();
-    for(int i=0; i<8; ++i){
+    for(int i=0; i<m_nasic; ++i){
 	mvec_adc[i].clear();
 	mvec_index[i].clear();
     }
