@@ -75,6 +75,7 @@ int ReadEventtree::GetTTreeReader(std::string name, TFile * file, TTreeReader* r
 int ReadEventtree::set_read_branch()
 {
     read_branch<unsigned int>(                   "livetime");
+    read_branch<unsigned int>(                   "integral_livetime");
     read_branch<unsigned int>(                   "unixtime");
     read_branch<unsigned int>(                   "ti_upper");
     read_branch<unsigned int>(                   "ti_lower");

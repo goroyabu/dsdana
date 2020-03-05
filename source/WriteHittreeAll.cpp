@@ -66,6 +66,7 @@ TFile * WriteHittreeAll::OpenTFile(std::string name, std::string option)
 int WriteHittreeAll::set_write_branch()
 {
     define_branch<unsigned int>("livetime", "livetime/i");
+    define_branch<unsigned int>("integral_livetime", "integral_livetime/i");
     define_branch<unsigned int>("unixtime", "unixtime/i");
     define_branch<unsigned int>("ti_upper", "ti_upper/i");
     define_branch<unsigned int>("ti_lower", "ti_lower/i");
