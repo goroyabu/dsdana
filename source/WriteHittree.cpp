@@ -111,6 +111,8 @@ int WriteHittree::set_write_branch()
 				"eventID/I");
     m_tree->Branch(            "livetime",            &m_livetime,
 			       "livetime/i");
+    m_tree->Branch(            "integral_livetime",            &m_integral_livetime,
+			       "integral_livetime/i");
     m_tree->Branch(            "unixtime",            &m_unixtime,
                             "unixtime/i");
     m_tree->Branch(        "ext2ti_lower",        &m_ext2ti_lower,

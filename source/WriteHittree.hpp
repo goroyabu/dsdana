@@ -29,6 +29,7 @@ protected:
 
     int                               m_eventID;
     unsigned int                      m_livetime;
+    unsigned int                      m_integral_livetime;
     unsigned int                      m_unixtime;
     unsigned int                      m_ext2ti_lower;
     int                               m_detid;
