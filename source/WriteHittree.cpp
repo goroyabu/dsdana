@@ -57,6 +57,7 @@ void WriteHittree::mod_ana(int &status)
     status = anlcross::ANL_OK;
 
     m_livetime = bnk::bnk_get<unsigned int>("livetime");
+    m_integral_livetime = bnk::bnk_get<unsigned int>("integral_livetime");
     m_unixtime = bnk::bnk_get<unsigned int>("unixtime");
     m_ext2ti_lower = bnk::bnk_get<unsigned int>("ext2ti_lower");
     
