@@ -30,6 +30,7 @@ private:
     std::vector<int> m_detid_list;
     TH1D * m_spect;
     TH2D * m_image;
+    //TH2D * m_spect2d;
 
     /* parameter */
     float m_delta_e_threshold;

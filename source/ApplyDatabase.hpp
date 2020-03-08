@@ -4,8 +4,9 @@
    @date 2018/11/27
    @date 2019/04/16 v1.1
    @date 2019/06/20 v1.2
-   @date 2019/07/23 v2.0 Change 'ReadDatabase' -> 'ReadDatabaseText'
-   @version 1.2
+   @date 2019/07/23 v2.0
+   @date 2019/08/05 v2.1
+   @version 2.1
 **/
 #ifndef ApplyDatabase_hpp
 #define ApplyDatabase_hpp
@@ -16,9 +17,9 @@
 #include <TH2D.h>
 
 #include <bnk.hpp>
-#include "ANLModuleBase.hpp"
-#include "ANLCross.hpp"
-//#include "ReadDatabase.hpp"
+#include <evs.hpp>
+#include <ANLModuleBase.hpp>
+#include <ANLCross.hpp>
 #include "ReadDatabaseText.hpp"
 
 class ApplyDatabase : public anlcross::ANLModuleBase
@@ -32,6 +33,7 @@ private:
     
     /* input */
     int m_nasic;
+    int m_asic_bgn, m_asic_end;
     std::vector<unsigned short> mvec_hitnum;
     std::vector<unsigned short> mvec_cmn;
     std::vector< std::vector<unsigned short> > mvec_adc;
@@ -58,12 +60,12 @@ public:
     void mod_endrun(int &status);
     void mod_exit(int &status);
 
-    int bnkDefAll();
+    //int bnkDefAll();
     int bnkGetAll();
     int bnkPutAll();
     int clearVectorAll();
     int isBadch(int asicid, int asicch);
-    int isXside(int asicid, int asicch);
+    //int isXside(int asicid, int asicch);
     float getRandom();
 };
 #endif

@@ -8,7 +8,7 @@
 #include "ReadEventtree.hpp"
 
 ReadEventtree::ReadEventtree() :
-    ANLModuleBase("ReadEventtree", "2.1"),
+    ANLModuleBase("ReadEventtree", "1.0"),
     m_file(nullptr), m_file_name("in.root"), m_tree_name("TTree")
 {
 }
@@ -82,6 +82,9 @@ int ReadEventtree::set_read_branch()
     read_branch<unsigned int>(               "ext1ti_lower");
     read_branch<unsigned int>(               "ext2ti_upper");
     read_branch<unsigned int>(               "ext2ti_lower");
+    read_branch<unsigned short int>(              "gps1pps");
+    read_branch<unsigned short int>(              "ext1pps");
+    read_branch<unsigned int>(               "msec_counter");
     read_branch<unsigned short int>(                    "hitnum0");
     read_branch<unsigned short int>(                       "cmn0");
     read_branch_array<unsigned short int>(              "index0",   64);
@@ -114,7 +117,166 @@ int ReadEventtree::set_read_branch()
     read_branch<unsigned short int>(                       "cmn7");
     read_branch_array<unsigned short int>(              "index7",   64);
     read_branch_array<unsigned short int>(                "adc7",   64);
-
+    read_branch<unsigned short int>(                    "hitnum8");
+    read_branch<unsigned short int>(                       "cmn8");
+    read_branch_array<unsigned short int>(              "index8",   64);
+    read_branch_array<unsigned short int>(                "adc8",   64);
+ 
+    read_branch<unsigned short int>(                    "hitnum9"); 
+    read_branch<unsigned short int>(                       "cmn9"); 
+    read_branch_array<unsigned short int>(              "index9",   64); 
+    read_branch_array<unsigned short int>(                "adc9",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum10"); 
+    read_branch<unsigned short int>(                       "cmn10"); 
+    read_branch_array<unsigned short int>(              "index10",   64); 
+    read_branch_array<unsigned short int>(                "adc10",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum11"); 
+    read_branch<unsigned short int>(                       "cmn11"); 
+    read_branch_array<unsigned short int>(              "index11",   64); 
+    read_branch_array<unsigned short int>(                "adc11",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum12"); 
+    read_branch<unsigned short int>(                       "cmn12"); 
+    read_branch_array<unsigned short int>(              "index12",   64); 
+    read_branch_array<unsigned short int>(                "adc12",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum13"); 
+    read_branch<unsigned short int>(                       "cmn13"); 
+    read_branch_array<unsigned short int>(              "index13",   64); 
+    read_branch_array<unsigned short int>(                "adc13",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum14"); 
+    read_branch<unsigned short int>(                       "cmn14"); 
+    read_branch_array<unsigned short int>(              "index14",   64); 
+    read_branch_array<unsigned short int>(                "adc14",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum15"); 
+    read_branch<unsigned short int>(                       "cmn15"); 
+    read_branch_array<unsigned short int>(              "index15",   64); 
+    read_branch_array<unsigned short int>(                "adc15",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum16"); 
+    read_branch<unsigned short int>(                       "cmn16"); 
+    read_branch_array<unsigned short int>(              "index16",   64); 
+    read_branch_array<unsigned short int>(                "adc16",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum17"); 
+    read_branch<unsigned short int>(                       "cmn17"); 
+    read_branch_array<unsigned short int>(              "index17",   64); 
+    read_branch_array<unsigned short int>(                "adc17",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum18"); 
+    read_branch<unsigned short int>(                       "cmn18"); 
+    read_branch_array<unsigned short int>(              "index18",   64); 
+    read_branch_array<unsigned short int>(                "adc18",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum19"); 
+    read_branch<unsigned short int>(                       "cmn19"); 
+    read_branch_array<unsigned short int>(              "index19",   64); 
+    read_branch_array<unsigned short int>(                "adc19",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum20"); 
+    read_branch<unsigned short int>(                       "cmn20"); 
+    read_branch_array<unsigned short int>(              "index20",   64); 
+    read_branch_array<unsigned short int>(                "adc20",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum21"); 
+    read_branch<unsigned short int>(                       "cmn21"); 
+    read_branch_array<unsigned short int>(              "index21",   64); 
+    read_branch_array<unsigned short int>(                "adc21",   64);
+     
+    read_branch<unsigned short int>(                    "hitnum22"); 
+    read_branch<unsigned short int>(                       "cmn22"); 
+    read_branch_array<unsigned short int>(              "index22",   64); 
+    read_branch_array<unsigned short int>(                "adc22",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum23"); 
+    read_branch<unsigned short int>(                       "cmn23"); 
+    read_branch_array<unsigned short int>(              "index23",   64); 
+    read_branch_array<unsigned short int>(                "adc23",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum24"); 
+    read_branch<unsigned short int>(                       "cmn24"); 
+    read_branch_array<unsigned short int>(              "index24",   64); 
+    read_branch_array<unsigned short int>(                "adc24",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum25"); 
+    read_branch<unsigned short int>(                       "cmn25"); 
+    read_branch_array<unsigned short int>(              "index25",   64); 
+    read_branch_array<unsigned short int>(                "adc25",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum26"); 
+    read_branch<unsigned short int>(                       "cmn26"); 
+    read_branch_array<unsigned short int>(              "index26",   64); 
+    read_branch_array<unsigned short int>(                "adc26",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum27"); 
+    read_branch<unsigned short int>(                       "cmn27"); 
+    read_branch_array<unsigned short int>(              "index27",   64); 
+    read_branch_array<unsigned short int>(                "adc27",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum28"); 
+    read_branch<unsigned short int>(                       "cmn28"); 
+    read_branch_array<unsigned short int>(              "index28",   64); 
+    read_branch_array<unsigned short int>(                "adc28",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum29"); 
+    read_branch<unsigned short int>(                       "cmn29"); 
+    read_branch_array<unsigned short int>(              "index29",   64); 
+    read_branch_array<unsigned short int>(                "adc29",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum30"); 
+    read_branch<unsigned short int>(                       "cmn30"); 
+    read_branch_array<unsigned short int>(              "index30",   64); 
+    read_branch_array<unsigned short int>(                "adc30",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum31"); 
+    read_branch<unsigned short int>(                       "cmn31"); 
+    read_branch_array<unsigned short int>(              "index31",   64); 
+    read_branch_array<unsigned short int>(                "adc31",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum32"); 
+    read_branch<unsigned short int>(                       "cmn32"); 
+    read_branch_array<unsigned short int>(              "index32",   64); 
+    read_branch_array<unsigned short int>(                "adc32",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum33"); 
+    read_branch<unsigned short int>(                       "cmn33"); 
+    read_branch_array<unsigned short int>(              "index33",   64); 
+    read_branch_array<unsigned short int>(                "adc33",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum34"); 
+    read_branch<unsigned short int>(                       "cmn34"); 
+    read_branch_array<unsigned short int>(              "index34",   64); 
+    read_branch_array<unsigned short int>(                "adc34",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum35"); 
+    read_branch<unsigned short int>(                       "cmn35"); 
+    read_branch_array<unsigned short int>(              "index35",   64); 
+    read_branch_array<unsigned short int>(                "adc35",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum36"); 
+    read_branch<unsigned short int>(                       "cmn36"); 
+    read_branch_array<unsigned short int>(              "index36",   64); 
+    read_branch_array<unsigned short int>(                "adc36",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum37"); 
+    read_branch<unsigned short int>(                       "cmn37"); 
+    read_branch_array<unsigned short int>(              "index37",   64); 
+    read_branch_array<unsigned short int>(                "adc37",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum38"); 
+    read_branch<unsigned short int>(                       "cmn38"); 
+    read_branch_array<unsigned short int>(              "index38",   64); 
+    read_branch_array<unsigned short int>(                "adc38",   64);
+    
+    read_branch<unsigned short int>(                    "hitnum39"); 
+    read_branch<unsigned short int>(                       "cmn39"); 
+    read_branch_array<unsigned short int>(              "index39",   64); 
+    read_branch_array<unsigned short int>(                "adc39",   64);
+    
     return anlcross::ANL_OK;
 }
 

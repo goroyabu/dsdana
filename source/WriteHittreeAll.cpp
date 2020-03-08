@@ -73,6 +73,9 @@ int WriteHittreeAll::set_write_branch()
     define_branch<unsigned int>("ext1ti_lower", "ext1ti_lower/i");
     define_branch<unsigned int>("ext2ti_upper", "ext2ti_upper/i");
     define_branch<unsigned int>("ext2ti_lower", "ext2ti_lower/i");
+    define_branch<unsigned short int>("gps1pps", "gps1pps/s");
+    define_branch<unsigned short int>("ext1pps", "ext1pps/s");
+    define_branch<unsigned int>("msec_counter", "msec_counter/i");
     define_branch<int>("nsignal_x_lv1", "nsignal_x_lv1/I");
     define_branch<int>("nsignal_y_lv1", "nsignal_y_lv1/I");
     define_branch<int>("detid_x_lv1", "detid_x_lv1[nsignal_x_lv1]/I");

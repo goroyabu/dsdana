@@ -8,12 +8,10 @@
 #include <ANLCross.hpp>
 
 #include "ReadEventtree.hpp"
-#include "ReadDatabase.hpp"
 #include "ReadDatabaseText.hpp"
 #include "ApplyDatabase.hpp"
 #include "MergeAdjacent.hpp"
 #include "CoupleHit.hpp"
-//#include "MakePhotonList.hpp"
 #include "WriteHittree.hpp"
 #include "WriteHittreeAll.hpp"
 
@@ -22,12 +20,10 @@ int main()
     using namespace anlcross;
 
     add_module(new ReadEventtree());
-    //add_module(new ReadDatabase());
     add_module(new ReadDatabaseText());
     add_module(new ApplyDatabase());
     add_module(new MergeAdjacent());
     add_module(new CoupleHit());
-    //add_module(new MakePhotonList());
     add_module(new WriteHittree());
     add_module(new WriteHittreeAll());
     

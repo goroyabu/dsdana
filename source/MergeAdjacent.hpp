@@ -19,7 +19,6 @@
 #include <ANLCross.hpp>
 #include <ANLModuleBase.hpp>
 
-//#include "ReadDatabase.hpp"
 #include "ReadDatabaseText.hpp"
 
 class MergeAdjacent : public anlcross::ANLModuleBase
@@ -47,17 +46,6 @@ private:
     std::vector<float> m_epi_x_lv1;
     std::vector<float> m_epi_y_lv1;
 
-    struct lv1data
-    {
-	int index;
-	int detid;
-	int stripid;
-	float epi;
-	lv1data(int _index, int _detid, int _stripid, float _epi) :
-	    index(_index), detid(_detid), stripid(_stripid), epi(_epi){}
-    };
-    std::vector<lv1data> m_lv1data_x_list, m_lv1data_y_list;
-        
     /* output */
     int m_nsignal_x_lv2;
     int m_nsignal_y_lv2;
@@ -75,6 +63,71 @@ private:
     std::vector<int> m_lv1signal_id_x_lv2;
     std::vector<int> m_lv1signal_id_y_lv2;
     
+    // struct lv1data
+    // {
+    // 	int index;
+    // 	int detid;
+    // 	int stripid;
+    // 	float epi;
+    // 	lv1data(int _index, int _detid, int _stripid, float _epi) :
+    // 	    index(_index), detid(_detid), stripid(_stripid), epi(_epi){}
+    // };
+    // std::vector<lv1data> m_lv1data_x_list, m_lv1data_y_list;
+
+    struct stripdata
+    {
+    public:
+	int stripid, detid;
+	float epi;
+	bool is_xside, is_skip, is_used;
+
+	stripdata(int stripid, int detid=0) :
+	    stripid(stripid), detid(detid),
+	    epi(0.0),
+	    is_xside(false), is_skip(false), is_used(false)
+	{}
+	stripdata(const stripdata& org) :
+	    stripid(org.stripid), detid(org.detid),
+	    epi(org.epi),
+	    is_xside(org.is_xside), is_skip(org.is_skip), is_used(org.is_used)
+	{}
+	stripdata &operator=(const stripdata &org)
+	{
+	    stripid = org.stripid; detid = org.detid;
+	    epi = org.epi;
+	    is_xside = org.is_xside; is_skip = org.is_skip; is_used = org.is_used;
+	    return *this;
+	}
+
+	stripdata set_epi(float epi) { this->epi = epi; return *this; }
+	stripdata set_xside(bool is_xside) { this->is_xside = is_xside; return *this; }
+	
+    };
+    std::vector<stripdata> m_stripdata_list;
+
+    struct stripmerger
+    {
+	int detid;
+	bool is_xside;
+    	TH1D* histogram;
+    	std::vector<int> stripid_list;
+	stripmerger() : histogram(nullptr) {}
+	~stripmerger(){ delete histogram; }
+    };
+
+    int clearVectorAll();
+    int bnkGetAll();
+    int bnkPutAll();
+    int convert();
+    int set_merger( stripdata* strip, stripmerger* merger );
+    
+    int getNstrip(TH1D * hist) { return hist->GetEntries(); }
+    float getEPI(TH1D * hist) { return hist->Integral(); }
+    float getPos(TH1D * hist) { return hist->GetXaxis()->GetBinCenter( hist->GetMaximumBin() ); }
+    float getWidth(TH1D * hist) { return hist->GetBinWidth(50); }
+
+    bool isAdjacent(int stripid, const std::vector<int> &stripid_list);
+    
 public:
     MergeAdjacent();
     ~MergeAdjacent(){}
@@ -86,22 +139,13 @@ public:
     void mod_endrun(int &status);
     void mod_exit(int &status);
     
-    int bnkDefAll();
-    int bnkGetAll();
-    int bnkPutAll();
-
-    int clearVectorAll();
+    //int bnkDefAll();
+    
     int extractSignalsOverThreshold();
-    void extractOneDetector(int detid, std::vector<lv1data>& xdata, std::vector<lv1data>& ydata);
-    int convertLv1toLv2(int detid);
-    int fillHistogram(std::vector<lv1data>& data_list);
+    //void extractOneDetector(int detid, std::vector<lv1data>& xdata, std::vector<lv1data>& ydata);
+    //int convertLv1toLv2(int detid);
+    //int fillHistogram(std::vector<lv1data>& data_list);
 
-    int getNstrip(TH1D * hist) { return hist->GetEntries(); }
-    float getEPI(TH1D * hist) { return hist->Integral(); }
-    float getPos(TH1D * hist) { return hist->GetXaxis()->GetBinCenter( hist->GetMaximumBin() ); }
-    float getWidth(TH1D * hist) { return hist->GetBinWidth(50); }
-
-    bool isAdjacent(int stripid, const std::vector<int> &stripid_list);
-    bool isAdjacent(int stripid, const std::vector<lv1data> &data_list);
+    //bool isAdjacent(int stripid, const std::vector<lv1data> &data_list);
 };
 #endif

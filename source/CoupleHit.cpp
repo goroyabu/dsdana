@@ -18,57 +18,50 @@ CoupleHit::CoupleHit() : ANLModuleBase("CoupleHit", "3.0"), mDatabase(nullptr),
 void CoupleHit::mod_init(int &status)
 {
     using namespace evs;
-    status = ANL_OK;
-    //std::cout << "CoupleHit::mod_init" << std::endl;
+    status = anlcross::ANL_OK;
     
     mDatabase = (ReadDatabaseText*)get_module("ReadDatabaseText");
     if( !mDatabase || mDatabase->mod_name()!="ReadDatabaseText") status = ANL_NG;
-    mDatabase->GetDetIDList(&m_detid_list);
+    m_detid_list = mDatabase->GetListOfDetids();//&m_detid_list);
     
     status = this->bnkDefAll();
 
-    EvsDef("nhit_lv3==1");
-    EvsDef("nhit_lv3==2");
-    EvsDef("nhit_lv3==3");
-    EvsDef("nhit_lv3>=4");
-    
-    //std::cout << std::endl;
+    evs::EvsDef("nhit_lv3==1");
+    evs::EvsDef("nhit_lv3==2");
+    evs::EvsDef("nhit_lv3==3");
+    evs::EvsDef("nhit_lv3>=4");
 }
 void CoupleHit::mod_his(int &status)
 {
-    m_spect = new TH1D("spect_lv3", "spect;epi_lv3", 1000, -10.25, 489.25);
+    m_spect = new TH1D("spect_lv3", "spect;epi_lv3", 10000, -10, 990);
     m_image = new TH2D("image_lv3", "image;pos_x_lv3;pos_y_lv3", 128, -16, 16, 128, -16, 16);
-    status = ANL_OK;
+    status = anlcross::ANL_OK;
 }
 void CoupleHit::mod_com(int &status)
 {
-    status = ANL_OK;
+    status = anlcross::ANL_OK;
 }
 void CoupleHit::mod_ana(int &status)
 {
-    status = ANL_OK;
-
+    status = anlcross::ANL_OK;
     this->clearVectorAll();
     this->bnkGetAll();
-
     for(auto detid : m_detid_list){
 	this->reconstructLv2toLv3(detid);
     }
-
     this->bnkPutAll();
 }
 void CoupleHit::mod_endrun(int &status)
 {
     if( gDirectory->InheritsFrom("TFile") && gDirectory->GetFile()->IsOpen() ){
-	status = ANL_OK;
-	//m_spect->Write();
-	//m_image->Write();
+	m_spect->Write();
+	m_image->Write();
     }
-    status = ANL_OK;
+    status = anlcross::ANL_OK;
 }
 void CoupleHit::mod_exit(int &status)
 {
-    status = ANL_OK;
+    status = anlcross::ANL_OK;
 }
 int CoupleHit::bnkDefAll()
 {
@@ -173,21 +166,14 @@ int CoupleHit::bnkPutAll()
 int CoupleHit::clearVectorAll()
 {
     m_nhit_lv3 = 0;
-    m_detid_lv3.clear();
-    m_epi_lv3.clear();
-    m_epi_x_lv3.clear();
-    m_epi_y_lv3.clear();
-    m_pos_x_lv3.clear();
-    m_pos_y_lv3.clear();
-    m_pos_z_lv3.clear();
-    m_width_x_lv3.clear();
-    m_width_y_lv3.clear();
-    m_width_z_lv3.clear();
-    m_n_lv2signal_x_lv3 = 0;
-    m_n_lv2signal_y_lv3 = 0;
-    m_lv2signal_id_x_lv3.clear();
-    m_lv2signal_id_y_lv3.clear();
-    return ANL_OK;
+    m_detid_lv3.clear();  m_epi_lv3.clear();
+    m_epi_x_lv3.clear();  m_epi_y_lv3.clear();
+    m_pos_x_lv3.clear();  m_width_x_lv3.clear(); 
+    m_pos_y_lv3.clear();  m_width_y_lv3.clear();
+    m_pos_z_lv3.clear();  m_width_z_lv3.clear();
+    m_n_lv2signal_x_lv3 = 0;  m_lv2signal_id_x_lv3.clear();
+    m_n_lv2signal_y_lv3 = 0;  m_lv2signal_id_y_lv3.clear();
+    return anlcross::ANL_OK;
 }
 int CoupleHit::reconstructLv2toLv3(int detid)
 {
@@ -286,43 +272,10 @@ void CoupleHit::sortIndex(int nsignal, std::vector<float> &epi_list, std::vector
 	sorted_list->emplace_back( pair_list[newindex].second );
     }
 }
-/*
-void CoupleHit::case1and1(int detid)
-{
-    float epi = ( m_epi_x[0] + m_epi_y[0] ) * 0.5;
-    float epi_x = m_epi_x[0];
-    float epi_y = m_epi_y[0];
-    float pos_x = m_pos_x[0];
-    float pos_y = m_pos_y[0];
-    float width_x = m_width_x[0];
-    float width_y = m_width_y[0];
-    float pos_z, width_z;
-    mDatabase->GetZ(detid, 0, &pos_z);
-    mDatabase->GetWidthZ(detid, 0, &width_z);
-    
-    ++m_nhit_lv3;
-    m_detid_lv3.emplace_back(detid);
-    m_epi_lv3.emplace_back(epi);
-    m_epi_x_lv3.emplace_back(epi_x);
-    m_epi_y_lv3.emplace_back(epi_y);
-    m_pos_x_lv3.emplace_back(pos_x);
-    m_pos_y_lv3.emplace_back(pos_y);
-    m_pos_z_lv3.emplace_back(pos_z);
-    m_width_x_lv3.emplace_back(width_x);
-    m_width_y_lv3.emplace_back(width_y);
-    m_width_z_lv3.emplace_back(width_z);
-    ++m_n_lv2signal_x_lv3;
-    ++m_n_lv2signal_y_lv3;
-    m_lv2signal_id_x_lv3.emplace_back(m_index_x[0]);
-    m_lv2signal_id_y_lv3.emplace_back(m_index_y[0]);
-
-}
-*/
 int CoupleHit::case1and1(int detid, const signal_data& x0, const signal_data& y0)
 {
-    float pos_z, width_z;
-    mDatabase->GetZ(detid, 0, &pos_z);
-    mDatabase->GetWidthZ(detid, 0, &width_z);
+    float pos_z = mDatabase->GetPosz(detid);
+    float width_z = mDatabase->GetWidthz(detid);
     
     hit_data hit(detid);
 
@@ -340,9 +293,8 @@ int CoupleHit::case1and1(int detid, const signal_data& x0, const signal_data& y0
 }
 int CoupleHit::case1and2(int detid, const signal_data& x0, const signal_data& y0, const signal_data& y1)
 {
-    float pos_z, width_z;
-    mDatabase->GetZ(detid, 0, &pos_z);
-    mDatabase->GetWidthZ(detid, 0, &width_z);
+    float pos_z = mDatabase->GetPosz(detid);
+    float width_z = mDatabase->GetWidthz(detid);
 
     float epi_total = y0.epi + y1.epi;
     hit_data data(detid);
@@ -385,9 +337,8 @@ int CoupleHit::case1and2(int detid, const signal_data& x0, const signal_data& y0
 }
 int CoupleHit::case2and1(int detid, const signal_data& x0, const signal_data& x1, const signal_data& y0)
 {
-    float pos_z, width_z;
-    mDatabase->GetZ(detid, 0, &pos_z);
-    mDatabase->GetWidthZ(detid, 0, &width_z);
+    float pos_z = mDatabase->GetPosz(detid);
+    float width_z = mDatabase->GetWidthz(detid);
 
     float epi_total = x0.epi + x1.epi;
     hit_data data(detid);
@@ -430,9 +381,8 @@ int CoupleHit::case2and1(int detid, const signal_data& x0, const signal_data& x1
 }
 int CoupleHit::case2and2(int detid, const signal_data& x0, const signal_data& x1, const signal_data& y0, const signal_data& y1)
 {
-    float pos_z, width_z;
-    mDatabase->GetZ(detid, 0, &pos_z);
-    mDatabase->GetWidthZ(detid, 0, &width_z);
+    float pos_z = mDatabase->GetPosz(detid);
+    float width_z = mDatabase->GetWidthz(detid);
 
     hit_data data(detid);
 
@@ -514,9 +464,9 @@ int CoupleHit::case2and2(int detid, const signal_data& x0, const signal_data& x1
 }
 int CoupleHit::case3over(int detid, const std::vector<signal_data>& xsignal, std::vector<signal_data>& ysignal)
 {
-    float pos_z, width_z;
-    mDatabase->GetZ(detid, 0, &pos_z);
-    mDatabase->GetWidthZ(detid, 0, &width_z);
+    float pos_z = mDatabase->GetPosz(detid);
+    float width_z = mDatabase->GetWidthz(detid);
+
     hit_data data(detid);
 
     int maxsize = std::min( (int)xsignal.size(), (int)ysignal.size() );
@@ -533,283 +483,3 @@ int CoupleHit::case3over(int detid, const std::vector<signal_data>& xsignal, std
     }
     return anlcross::ANL_OK;
 }
-/*
-void CoupleHit::case1and2(int detid)
-{
-    float pos_z, width_z;
-    mDatabase->GetZ(detid, 0, &pos_z);
-    mDatabase->GetWidthZ(detid, 0, &width_z);
-
-    float epi_x = m_epi_x[0];
-    float epi_total = m_epi_y[0] + m_epi_y[1];
-    hit_data data(detid);
-
-    if( fabs(epi_x-epi_total) <= m_delta_e_threshold ){
-	data.set_epi3(m_epi_y[0],
-		      m_epi_x[0] * m_epi_y[0] / ( m_epi_y[0] + m_epi_y[1]),
-		      m_epi_y[0])
-	    .set_pos3(m_pos_x[0],
-		      m_pos_y[0],
-		      pos_z)
-	    .set_wid3(m_width_x[0],
-		      m_width_y[0],
-		      width_z)
-	    .set_ind2(m_index_x[0],
-		      m_index_y[0]);
-	push_back_hit(data);    
-	
-	data.set_epi3(m_epi_y[1],
-		      m_epi_x[0] * m_epi_y[1] / ( m_epi_y[0] + m_epi_y[1]),
-		      m_epi_y[1])
-	    .set_pos3(m_pos_x[0],
-		      m_pos_y[1],
-		      pos_z)
-	    .set_wid3(m_width_x[0],
-		      m_width_y[1],
-		      width_z)
-	    .set_ind2(m_index_x[0],
-		      m_index_y[1]);
-	push_back_hit(data);    
-
-    }else if( fabs(epi_x-m_epi_y[0]) <= m_delta_e_threshold &&
-	      fabs(epi_x-m_epi_y[0]) <= fabs(epi_x-m_epi_y[1]) ){
-	
-	data.set_epi3((m_epi_x[0] + m_epi_y[0])*0.5,
-		      m_epi_x[0],
-		      m_epi_y[0])
-	    .set_pos3(m_pos_x[0],
-		      m_pos_y[0],
-		      pos_z)
-	    .set_wid3(m_width_x[0],
-		      m_width_y[0],
-		      width_z)
-	    .set_ind2(m_index_x[0],
-		      m_index_y[0]);
-	push_back_hit(data);    
-
-    }else if( fabs(epi_x-m_epi_y[1]) <= m_delta_e_threshold &&
-	      fabs(epi_x-m_epi_y[1]) <= fabs(epi_x-m_epi_y[0]) ){
-	
-	data.set_epi3((m_epi_x[0] + m_epi_y[1])*0.5,
-		      m_epi_x[0],
-		      m_epi_y[1])
-	    .set_pos3(m_pos_x[0],
-		      m_pos_y[1],
-		      pos_z)
-	    .set_wid3(m_width_x[0],
-		      m_width_y[1],
-		      width_z)
-	    .set_ind2(m_index_x[0],
-		      m_index_y[1]);
-	push_back_hit(data);    
-    }
-    
-}
-void CoupleHit::case2and1(int detid)
-{
-    float pos_z, width_z;
-    mDatabase->GetZ(detid, 0, &pos_z);
-    mDatabase->GetWidthZ(detid, 0, &width_z);
-
-    float epi_y = m_epi_y[0];
-    float epi_total = m_epi_x[0] + m_epi_x[1];
-    hit_data data(detid);
-
-    if( fabs(epi_y-epi_total) <= m_delta_e_threshold ){
-	data.set_epi3(m_epi_x[0],
-		      m_epi_x[0],
-		      m_epi_y[0] * m_epi_x[0] / ( m_epi_x[0] + m_epi_x[1]))
-	    .set_pos3(m_pos_x[0],
-		      m_pos_y[0],
-		      pos_z)
-	    .set_wid3(m_width_x[0],
-		      m_width_y[0],
-		      width_z)
-	    .set_ind2(m_index_x[0],
-		      m_index_y[0]);
-	push_back_hit(data);    
-	
-	data.set_epi3(m_epi_x[1],
-		      m_epi_x[1],
-		      m_epi_y[0] * m_epi_x[1] / ( m_epi_x[0] + m_epi_x[1]))
-	    .set_pos3(m_pos_x[1],
-		      m_pos_y[0],
-		      pos_z)
-	    .set_wid3(m_width_x[1],
-		      m_width_y[0],
-		      width_z)
-	    .set_ind2(m_index_x[1],
-		      m_index_y[0]);
-	push_back_hit(data);
-	
-    }else if( fabs(epi_y-m_epi_x[0]) <= m_delta_e_threshold &&
-	      fabs(epi_y-m_epi_x[0]) <= fabs(epi_y-m_epi_x[1]) ){
-	
-	data.set_epi3((m_epi_x[0] + m_epi_y[0])*0.5,
-		      m_epi_x[0],
-		      m_epi_y[0])
-	    .set_pos3(m_pos_x[0],
-		      m_pos_y[0],
-		      pos_z)
-	    .set_wid3(m_width_x[0],
-		      m_width_y[0],
-		      width_z)
-	    .set_ind2(m_index_x[0],
-		      m_index_y[0]);
-	push_back_hit(data);    
-	
-    }else if( fabs(epi_y-m_epi_x[1]) <= m_delta_e_threshold &&
-	      fabs(epi_y-m_epi_x[1]) <= fabs(epi_y-m_epi_x[0]) ){
-	
-	data.set_epi3((m_epi_x[1] + m_epi_y[0])*0.5,
-		      m_epi_x[1],
-		      m_epi_y[0])
-	    .set_pos3(m_pos_x[1],
-		      m_pos_y[0],
-		      pos_z)
-	    .set_wid3(m_width_x[1],
-		      m_width_y[0],
-		      width_z)
-	    .set_ind2(m_index_x[1],
-		      m_index_y[0]);
-	push_back_hit(data);    
-	
-    }
-}
-void CoupleHit::case2and2(int detid)
-{
-    float pos_z, width_z;
-    mDatabase->GetZ(detid, 0, &pos_z);
-    mDatabase->GetWidthZ(detid, 0, &width_z);
-
-    hit_data data(detid);
-
-    float delta_e_x0_y0 = fabs(m_epi_x[0]-m_epi_y[0]);
-    float delta_e_x0_y1 = fabs(m_epi_x[0]-m_epi_y[1]);
-    float delta_e_x1_y0 = fabs(m_epi_x[1]-m_epi_y[0]);
-    float delta_e_x1_y1 = fabs(m_epi_x[1]-m_epi_y[1]);
-    bool is_in_threshold_xtotal_vs_ytotal = fabs(m_epi_x[0]+m_epi_x[1]-m_epi_y[0]-m_epi_y[1]) <= m_delta_e_threshold;
-    
-    if( is_in_threshold_xtotal_vs_ytotal ){
-	if(delta_e_x0_y0 <= m_delta_e_threshold &&
-	   delta_e_x1_y1 <= m_delta_e_threshold ){
-       
-	    data.set_epi3(m_epi_x[0],
-			  m_epi_x[0],
-			  m_epi_y[0])
-		.set_pos3(m_pos_x[0],
-			  m_pos_y[0],
-			  pos_z)
-		.set_wid3(m_width_x[0],
-			  m_width_y[0],
-			  width_z)
-		.set_ind2(m_index_x[0],
-			  m_index_y[0]);
-	    push_back_hit(data);    
-	    
-	    data.set_epi3(m_epi_x[1],
-			  m_epi_x[1],
-			  m_epi_y[1])
-		.set_pos3(m_pos_x[1],
-			  m_pos_y[1],
-			  pos_z)
-		.set_wid3(m_width_x[1],
-			  m_width_y[1],
-			  width_z)
-		.set_ind2(m_index_x[1],
-			  m_index_y[1]);
-	    push_back_hit(data);
-	
-	}else if( delta_e_x0_y1 <= m_delta_e_threshold &&
-		  delta_e_x1_y0 <= m_delta_e_threshold ){
-	    
-	    data.set_epi3(m_epi_x[0],
-			  m_epi_x[0],
-			  m_epi_y[0])
-		.set_pos3(m_pos_x[0],
-			  m_pos_y[0],
-			  pos_z)
-		.set_wid3(m_width_x[0],
-			  m_width_y[0],
-			  width_z)
-		.set_ind2(m_index_x[0],
-			  m_index_y[0]);
-	    push_back_hit(data);    
-	    
-	    data.set_epi3(m_epi_x[1],
-			  m_epi_x[1],
-			  m_epi_y[1])
-		.set_pos3(m_pos_x[1],
-			  m_pos_y[1],
-			  pos_z)
-		.set_wid3(m_width_x[1],
-			  m_width_y[1],
-			  width_z)
-		.set_ind2(m_index_x[1],
-			  m_index_y[1]);
-	    push_back_hit(data);
-	}
-    }
-    
-    //else{
-    //	if( fabs(m_epi_x[0]-m_epi_y[0]-m_epi_y[1]) <= m_delta_e_threshold ) case1and2(detid);
-    //	else if( fabs(m_epi_x[0]+m_epi_x[1]-m_epi_y[0]) <= m_delta_e_threshold ) case2and1(detid);
-    //}
-    
-}
-void CoupleHit::case3over(int detid)
-{
-    float pos_z, width_z;
-    mDatabase->GetZ(detid, 0, &pos_z);
-    mDatabase->GetWidthZ(detid, 0, &width_z);
-    hit_data data(detid);
-    
-    for(int i=0; i<m_nsignal_x; ++i){
-	int index_x = m_sorted_index_x[i];
-	int index_y = m_sorted_index_y[i];
-
-	if( fabs(m_epi_x[index_y]-m_epi_y[index_x]) > m_delta_e_threshold ) continue;
-	
-	data.set_epi3(( m_epi_x[index_x] + m_epi_y[index_y] ) * 0.5,
-		      m_epi_x[index_y],
-		      m_epi_y[index_x])
-	    .set_pos3(m_pos_x[index_x],
-		      m_pos_y[index_y],
-		      pos_z)
-	    .set_wid3(m_width_x[index_x],
-		      m_width_y[index_y],
-		      width_z)
-	    .set_ind2(m_index_x[index_x],
-		      m_index_y[index_y]);
-	push_back_hit(data);
-    }
-	
-    if( m_nsignal_x == m_nsignal_y ){
-	for(int i=0; i<m_nsignal_x; ++i){
-	    int index_x = m_sorted_index_x[i];
-	    int index_y = m_sorted_index_y[i];
-	    float epi = ( m_epi_x[index_x] + m_epi_y[index_y] ) * 0.5;
-	    float epi_x = m_epi_x[index_x];
-	    float epi_y = m_epi_y[index_y];
-	    float pos_x = m_pos_x[index_x];
-	    float pos_y = m_pos_y[index_y];
-	    float width_x = m_width_x[index_x];
-	    float width_y = m_width_y[index_y];
-
-	    ++m_nhit_lv3;
-	    m_detid_lv3.emplace_back(detid);
-	    m_epi_lv3.emplace_back(epi);
-	    m_epi_x_lv3.emplace_back(epi_x);
-	    m_epi_y_lv3.emplace_back(epi_y);
-	    m_pos_x_lv3.emplace_back(pos_x);
-	    m_pos_y_lv3.emplace_back(pos_y);
-	    m_pos_z_lv3.emplace_back(pos_z);
-	    m_width_x_lv3.emplace_back(width_x);
-	    m_width_y_lv3.emplace_back(width_y);
-	    m_width_z_lv3.emplace_back(width_z);
-	}
-    }
-    
-    //evs::EvsSet("over 3 signals on 1 side");
-}
-*/
