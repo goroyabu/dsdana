@@ -32,6 +32,7 @@ protected:
     unsigned int                      m_integral_livetime;
     unsigned int                      m_unixtime;
     unsigned int                      m_ext2ti_lower;
+    unsigned int                      m_ti;
     int                               m_detid;
     float                             m_epi;
     float                             m_epi_x;

@@ -83,6 +83,7 @@ int ReadEventtree::set_read_branch()
     read_branch<unsigned int>(               "ext1ti_lower");
     read_branch<unsigned int>(               "ext2ti_upper");
     read_branch<unsigned int>(               "ext2ti_lower");
+    read_branch<unsigned int>(                         "ti");
     read_branch<unsigned short int>(                    "hitnum0");
     read_branch<unsigned short int>(                       "cmn0");
     read_branch_array<unsigned short int>(              "index0",   64);

@@ -118,6 +118,8 @@ int WriteHittree::set_write_branch()
                             "unixtime/i");
     m_tree->Branch(        "ext2ti_lower",        &m_ext2ti_lower,
                         "ext2ti_lower/i");
+    m_tree->Branch(                  "ti",                  &m_ti,
+                                  "ti/i");
     m_tree->Branch(               "detid",               &m_detid,
                                "detid/I");
     m_tree->Branch(                 "epi",                 &m_epi,
