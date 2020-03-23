@@ -1,16 +1,16 @@
 /**
-   @ApplyDatabase.hpp
+   @ApplyDatabaseText.hpp
    @author Goro Yabu
    @date 2018/11/27
-   @date 2019/04/16 v1.1
-   @date 2019/06/20 v1.2
-   @date 2019/07/23 v2.0
-   @date 2019/08/05 v2.1
-   @date 2020/03/23 v2.2
-   @version 2.2
+   @date 2019/04/16 'ApplyDatabase' v1.1
+   @date 2019/06/20 'ApplyDatabase' v1.2
+   @date 2019/07/23 'ApplyDatabase' v2.0
+   @date 2019/08/05 'ApplyDatabase' v2.1
+   @date 2020/03/23 'ApplyDatabaseText' v1.0
+   @version 1.0
 **/
-#ifndef ApplyDatabase_hpp
-#define ApplyDatabase_hpp
+#ifndef ApplyDatabaseText_hpp
+#define ApplyDatabaseText_hpp
 
 #include <string>
 
@@ -21,12 +21,12 @@
 #include <evs.hpp>
 #include <ANLModuleBase.hpp>
 #include <ANLCross.hpp>
-#include "ReadDatabase.hpp"
+#include "ReadDatabaseText.hpp"
 
-class ApplyDatabase : public anlcross::ANLModuleBase
+class ApplyDatabaseText : public anlcross::ANLModuleBase
 {
 private:
-    ReadDatabase * mDatabase;
+    ReadDatabaseText * mDatabase;
     TRandom3 * mRandom;
     TH2D * m_histall;
     TH2D * m_spectall;
@@ -51,8 +51,8 @@ private:
     std::vector<float> m_epi_y_lv1;
 
 public:
-    ApplyDatabase();
-    ~ApplyDatabase() {}
+    ApplyDatabaseText();
+    ~ApplyDatabaseText() {}
 
     void mod_init(int &status);
     void mod_his(int &status);

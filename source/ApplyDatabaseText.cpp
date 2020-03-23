@@ -1,23 +1,23 @@
 /**
-   @file ApplyDatabase.cpp
+   @file ApplyDatabaseText.cpp
    @author Goro Yabu
    @date 2018/11/27
-   @date 2019/04/16 v1.1 Change this module name to ApplyDatabase
-   @date 2019/06/20 v1.2 Fix bugs.
-   @date 2019/07/23 v2.0 Change 'ReadDatabase' -> 'ReadDatabaseText'
-   @date 2019/08/05 v2.1 Adapt to ReadDatabaseText v1.1
-   @date 2020/03/23 v2.2 Divide 2 module 'ApplyDatabase' and 'ApplyDatabaseText'
-   @version 2.2
+   @date 2019/04/16 'ApplyDatabase' v1.1 Change this module name to ApplyDatabaseText
+   @date 2019/06/20 'ApplyDatabase' v1.2 Fix bugs.
+   @date 2019/07/23 'ApplyDatabase' v2.0 Change 'ReadDatabase' -> 'ReadDatabaseText'
+   @date 2019/08/05 'ApplyDatabase' v2.1 Adapt to ReadDatabaseText v1.1
+   @date 2020/03/23 'ApplyDatabaseText' v1.0 Divide 2 modules 'ApplyDatabase' and 'ApplyDatabaseText'
+   @version 1.0
 **/
-#include "ApplyDatabase.hpp"
-ApplyDatabase::ApplyDatabase() : ANLModuleBase("ApplyDatabase", "2.2"),
+#include "ApplyDatabaseText.hpp"
+ApplyDatabaseText::ApplyDatabaseText() : ANLModuleBase("ApplyDatabaseText", "1.0"),
 				 mDatabase(nullptr), mRandom(nullptr),
 				 m_histall(nullptr), m_spectall(nullptr),
 				 m_multi_hist(nullptr)
 {
     m_asic_bgn = 0; m_asic_end = 0;
 }
-void ApplyDatabase::mod_init(int &status)
+void ApplyDatabaseText::mod_init(int &status)
 {
     using namespace bnk;
     using namespace evs;
@@ -27,25 +27,20 @@ void ApplyDatabase::mod_init(int &status)
     mRandom = new TRandom3();
     mRandom->SetSeed(time(NULL));
 
-    mDatabase = (ReadDatabase*)anlcross::get_module("ReadDatabase");
-    if( !mDatabase || mDatabase->mod_name()!="ReadDatabase")
+    mDatabase = (ReadDatabaseText*)anlcross::get_module("ReadDatabaseText");
+    if( !mDatabase || mDatabase->mod_name()!="ReadDatabaseText")
 	status = anlcross::ANL_NG;
 
-    m_nasic=0;
-    while(true){
-    	if( bnk_is_def("hitnum"+std::to_string(m_nasic))==BNK_NG ) break;
-    	++m_nasic;
-    }        
-    // m_nasic = mDatabase->GetNasics();
-    // m_asic_bgn = mDatabase->GetAsicidMin();
-    // m_asic_end = mDatabase->GetAsicidMax();
+    m_nasic = mDatabase->GetNasics();
+    m_asic_bgn = mDatabase->GetAsicidMin();
+    m_asic_end = mDatabase->GetAsicidMax();
     mvec_hitnum.resize(m_nasic);
     mvec_cmn.resize(m_nasic);
     mvec_adc.resize(m_nasic);
     mvec_index.resize(m_nasic);
 
-    int nxside = m_nasic*64;//mDatabase->GetNxside();
-    int nyside = m_nasic*64;//mDatabase->GetNyside();
+    int nxside = mDatabase->GetNxside();
+    int nyside = mDatabase->GetNyside();
     m_detid_x_lv1.reserve(nxside);
     m_detid_y_lv1.reserve(nyside);
     m_stripid_x_lv1.reserve(nxside);
@@ -75,26 +70,26 @@ void ApplyDatabase::mod_init(int &status)
 
     status = anlcross::ANL_OK;
 }
-void ApplyDatabase::mod_his(int &status)
+void ApplyDatabaseText::mod_his(int &status)
 {
     m_histall = new TH2D("histall_lv1", "histall;stripid;pha",
-			 //mDatabase->GetNstrips(), mDatabase->GetStripidMin()-0.5, mDatabase->GetStripidMax()-0.5,
-			 128, -0.5, 127.5,
+			 mDatabase->GetNstrips(),
+			 mDatabase->GetStripidMin()-0.5, mDatabase->GetStripidMax()-0.5,
 			 1000, -10.5, 989.5);
     m_spectall = new TH2D("spectall_lv1", "spectall;stripid;epi",
-			  //mDatabase->GetNstrips(), mDatabase->GetStripidMin()-0.5, mDatabase->GetStripidMax()-0.5,
-			  128, -0.5, 127.5,
+			  mDatabase->GetNstrips(),
+			  mDatabase->GetStripidMin()-0.5, mDatabase->GetStripidMax()-0.5,
 			  10000, -10, 990);
     m_multi_hist = new TH2D("multipli_lv1", "multiplicity lv1;nsignal_x_lv1;nsignal_y_lv1;",
 			    50, -0.5, 49.5, 50, -0.5, 49.5);
     status = anlcross::ANL_OK;
 }
-void ApplyDatabase::mod_com(int &status)
+void ApplyDatabaseText::mod_com(int &status)
 {
     //random mode
     status = anlcross::ANL_OK;
 }
-void ApplyDatabase::mod_ana(int &status)
+void ApplyDatabaseText::mod_ana(int &status)
 {
     using namespace evs;
     
@@ -149,19 +144,19 @@ void ApplyDatabase::mod_ana(int &status)
 	
     }
 }
-void ApplyDatabase::mod_endrun(int &status)
+void ApplyDatabaseText::mod_endrun(int &status)
 {    
     m_histall->Write();
     m_spectall->Write();
     m_multi_hist->Write();
     status = anlcross::ANL_OK;
 }
-void ApplyDatabase::mod_exit(int &status)
+void ApplyDatabaseText::mod_exit(int &status)
 {
     status = anlcross::ANL_OK;
 }
 
-// int ApplyDatabase::bnkDefAll()
+// int ApplyDatabaseText::bnkDefAll()
 // {
 //     // using namespace bnk;
 //     // using namespace std;
@@ -194,7 +189,7 @@ void ApplyDatabase::mod_exit(int &status)
     
 //     return anlcross::ANL_OK;
 // }
-int ApplyDatabase::bnkGetAll()
+int ApplyDatabaseText::bnkGetAll()
 {
     using namespace bnk;
     for(int i=0; i<m_nasic; ++i){
@@ -205,7 +200,7 @@ int ApplyDatabase::bnkGetAll()
     }    
     return anlcross::ANL_OK;
 }
-int ApplyDatabase::bnkPutAll()
+int ApplyDatabaseText::bnkPutAll()
 {
     using namespace bnk;
     bnk_put<int>("nsignal_x_lv1", m_nsignal_x_lv1);
@@ -218,7 +213,7 @@ int ApplyDatabase::bnkPutAll()
     bnk_put<float>("epi_y_lv1", m_epi_y_lv1, 0, m_nsignal_y_lv1);    
     return anlcross::ANL_OK;
 }
-int ApplyDatabase::clearVectorAll()
+int ApplyDatabaseText::clearVectorAll()
 {    
     mvec_hitnum.clear();  mvec_cmn.clear();
     for(int i=0; i<m_nasic; ++i){
@@ -232,12 +227,12 @@ int ApplyDatabase::clearVectorAll()
     m_stripid_y_lv1.clear();  m_epi_y_lv1.clear();    
     return anlcross::ANL_OK;
 }
-int ApplyDatabase::isBadch(int asicid, int asicch)
+int ApplyDatabaseText::isBadch(int asicid, int asicch)
 {
     bool badch = mDatabase->IsBadch( mDatabase->GetStripid(asicid, asicch) );
     if( badch ) return anlcross::ANL_YES;
     return anlcross::ANL_NO;
 }
-float ApplyDatabase::getRandom(){
+float ApplyDatabaseText::getRandom(){
     return mRandom->Uniform(-0.5, 0.5);
 }
