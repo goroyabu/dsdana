@@ -5,12 +5,14 @@ app="dsdana"
 function ana ()
 {
     infile=$1
-    outfile=${infile/".root"/"_hittree.root"}
+    outfile=${infile/".root"/"_detailed_hittree.root"}
     calfile=database.root
     
     $app << EOF
 define_analysis
-6
+3
+4
+7
 -1
 modify_param
 full ok
@@ -32,3 +34,5 @@ for data in $@
 do
     ana $data
 done
+
+	    

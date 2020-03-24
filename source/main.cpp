@@ -9,6 +9,8 @@
 #include "ReadEventtree.hpp"
 #include "ReadDatabase.hpp"
 #include "ApplyDatabase.hpp"
+#include "ReadDatabaseText.hpp"
+#include "ApplyDatabaseText.hpp"
 #include "MergeAdjacent.hpp"
 #include "CoupleHit.hpp"
 //#include "MakePhotonList.hpp"
@@ -22,6 +24,8 @@ int main()
     add_module(new ReadEventtree());
     add_module(new ReadDatabase());
     add_module(new ApplyDatabase());
+    add_module(new ReadDatabaseText());
+    add_module(new ApplyDatabaseText());
     add_module(new MergeAdjacent());
     add_module(new CoupleHit());
     //add_module(new MakePhotonList());
