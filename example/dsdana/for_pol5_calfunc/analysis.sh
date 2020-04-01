@@ -14,7 +14,9 @@ function ana ()
 define_analysis
 1
 2
-8
+3
+4
+10
 -1
 modify_param
 full ok

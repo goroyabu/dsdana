@@ -97,6 +97,9 @@ private:
     std::vector<int> m_stripid_list;
     std::map<int, int> m_stripid_to_index_map;
 
+    std::vector<float> m_detector_posz_list;
+    std::vector<float> m_detector_widthz_list;
+
     stripinfo maxinfo;
     stripinfo mininfo;
     
@@ -242,6 +245,20 @@ public:
     {
 	int index = GetIndex(stripid); if(index<0) return -1.0;
 	return eval_pol(mDatabaseList[index]->calparam, pha);
+    }
+    int GetDetectorPosz(int detid)
+    {
+	auto itr = std::find( mDetIDList.begin(), mDetIDList.end(), detid );
+	if ( itr == mDetIDList.end() ) return 0;
+	int index = std::distance( itr, mDetIDList.begin() );
+	return m_detector_posz_list[index];
+    }
+    int GetDetectorWidthz(int detid)
+    {
+	auto itr = std::find( mDetIDList.begin(), mDetIDList.end(), detid );
+	if ( itr == mDetIDList.end() ) return 0;
+	int index = std::distance( itr, mDetIDList.begin() );
+	return m_detector_widthz_list[index];
     }
         
     int GetAsicidMax() const { return maxinfo.asicid; }

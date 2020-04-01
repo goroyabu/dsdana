@@ -109,7 +109,11 @@ int ReadDatabaseText::read_database()
 	m_strip_map[ std::make_pair(asicid, asicch) ] = std::make_pair(detid, stripid);
 	
 	if( !ExistAsicid(asicid) ) m_asicid_list.emplace_back(asicid);	
-	if( !ExistDetid(detid) ) mDetIDList.emplace_back(detid);
+	if( !ExistDetid(detid) ) {
+	    mDetIDList.emplace_back(detid);
+	    m_detector_posz_list.emplace_back(posz);
+	    m_detector_widthz_list.emplace_back(widthz);
+	}
 	m_stripid_to_index_map[stripid] = index;
 	
 	stripinfo* temp = new stripinfo();
